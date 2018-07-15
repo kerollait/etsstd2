@@ -979,6 +979,7 @@
 
 <!-- external library -->
 <script type="text/javascript" src="file:///android_asset/www/app/common-res/js/lib/nano-sql.min.js"></script>
+<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/jquery/jquery.easypiechart.min.js"></script>
 <!-- external library -->
 
 <!-- etoos library -->
@@ -986,6 +987,35 @@
 <!-- etoos library -->
 
 <script type="text/javascript" src="study_list.js"></script>
+<script type="text/javascript">
+<!--
+	$(document).ready(function() {
+		mychart();
+	});
 
+	function mychart(){
+		var trackbarColor;
+		var trackbgColor = "#dedede"
+		$('.mychart').each(function () {
+			if(!$(this).parents('pre').length){
+				var no = $(this).attr('data-percent');
+				if(no==0){trackbarColor = trackbgColor}else{trackbarColor = "#0c818b"}
+				$(this).easyPieChart({
+					scaleColor: "transparent",
+					lineWidth: 3,
+					animate: 1000,
+					size: 80,
+					lineCap: 'round',
+					barColor:	trackbarColor,
+					trackColor: trackbgColor,
+					onStep: function(from, to, percent) {
+						$(this.el).find('.percent').text(Math.round(percent));
+					}
+				});
+			}
+		});
+	}
+//-->
+</script>
 </body>
 </html>

@@ -27,7 +27,7 @@ function onResume() {
 }
 
 function onTabSelected() {
-	etoos.setHeaderTitle('title', '다운로드 강좌', EtoosServiceUrl.download);
+	etoos.setHeaderTitle('title', '다운로드 함', EtoosServiceUrl.download);
 }
 
 function onTabReselected() {

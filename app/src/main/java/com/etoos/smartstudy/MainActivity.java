@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		initStartPage = 0;
+		initStartPage = 2;
 
 		pagerAdapter = new EtoosFragmentPagerAdapter(this.getSupportFragmentManager());
 		pagerAdapter.addFragment(new HomeFragment());

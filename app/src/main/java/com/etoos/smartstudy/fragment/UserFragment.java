@@ -31,4 +31,15 @@ public class UserFragment extends CordovaFragment {
 
 		super.loadUrl("file:///android_asset/www/app/user.html");
 	}
+
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser)
+	{
+		super.setUserVisibleHint(isVisibleToUser);
+		if (isVisibleToUser) {
+			if (appView != null) {
+				appView.loadUrl("javascript:etoos.setHeaderTitle('title', '내 강의실', EtoosServiceUrl.user);");
+			}
+		}
+	}
 }

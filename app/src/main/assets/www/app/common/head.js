@@ -23,7 +23,8 @@ var EtoosServiceUrl = {
 	study_list: url_root +"/app/study_list.html",
 	favorite: url_root +"/app/favorite.html",
 	download: url_root +"/app/download.html",
-	tcc_list: url_root +"/app/teacher/tcc/list.html"
+	tcc_list: url_root +"/app/teacher/tcc/list.html",
+	teacher: url_root +"/app/teacher/index.html"
 }
 
 var EtoosApiUrl = {

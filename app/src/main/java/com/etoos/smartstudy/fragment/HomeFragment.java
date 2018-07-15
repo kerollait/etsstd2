@@ -31,17 +31,4 @@ public class HomeFragment extends CordovaFragment {
 
 		super.loadUrl("file:///android_asset/www/app/index.html");
 	}
-
-	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser)
-	{
-		super.setUserVisibleHint(isVisibleToUser);
-		if (isVisibleToUser) {
-			if (appView != null) {
-				loadUrl("javascript:etoos.setHeaderTitle('home', EtoosData.getGradeName(), EtoosServiceUrl.home);");
-			}
-		} else {
-
-		}
-	}
 }

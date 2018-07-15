@@ -132,6 +132,32 @@ public class CordovaFragment extends Fragment {
 		appView.loadUrl("javascript:onTabReselected();");
 	}
 
+//	@Override
+//	public void setUserVisibleHint(boolean isVisibleToUser)
+//	{
+//		super.setUserVisibleHint(isVisibleToUser);
+//		if (isVisibleToUser) {
+//			if (appView != null) {
+//				String url = appView.getUrl();
+//				if (url.matches("(?i).*/www/app/study_list.html.*")) {
+//					loadUrl("javascript:etoos.setHeaderTitle('title', '수강중인 강좌', EtoosServiceUrl.study_list);");
+//				} else if (url.matches("(?i).*/www/app/favorite.html.*")) {
+//					loadUrl("javascript:etoos.setHeaderTitle('title', '즐겨찾는 강좌', EtoosServiceUrl.favorite);");
+//				} else if (url.matches("(?i).*/www/app/download.html.*")) {
+//					loadUrl("javascript:etoos.setHeaderTitle('title', '다운로드 강좌', EtoosServiceUrl.download);");
+//				} else if (url.matches("(?i).*/www/app/user.html.*")) {
+//					loadUrl("javascript:etoos.setHeaderTitle('title', '내 강의실', EtoosServiceUrl.user);");
+//				} else if (url.matches("(?i).*/www/app/teacher/.*")) {
+//					loadUrl("javascript:etoos.setHeaderTitle('title', '선생님', EtoosServiceUrl.teacher);");
+//				} else {
+//					loadUrl("javascript:etoos.setHeaderTitle('home', EtoosData.getGradeName(), EtoosServiceUrl.home);");
+//				}
+//			}
+//		} else {
+//
+//		}
+//	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (contentView == null) {

@@ -1,28 +1,24 @@
 package com.etoos.smartstudy;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
 
 import com.etoos.smartstudy.fragment.DownloadFragment;
 import com.etoos.smartstudy.fragment.FavoriteFragment;
 import com.etoos.smartstudy.fragment.HomeFragment;
 import com.etoos.smartstudy.fragment.StudyListFragment;
 import com.etoos.smartstudy.fragment.UserFragment;
-import com.etoos.smartstudy.utils.CommonUtils;
-
-import org.apache.cordova.engine.SystemWebView;
 
 import java.util.Objects;
 
@@ -33,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	TabLayout tabLayout;
 	private View splashScreen;
 	private int initStartPage;
+	private boolean doubleBackToExitPressedOnce = false;
 
 	EtoosFragmentPagerAdapter pagerAdapter;
 
@@ -246,5 +243,45 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+	}
+
+	@Override
+	public void onBackPressed() {
+
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		String url = "";
+		if (viewPager.getCurrentItem() == 0) {
+			url = ((HomeFragment) findFragmentByPosition(0)).getAppView().getUrl();
+		}
+
+		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+			return true;
+		} else {
+			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+					&& (url.matches("(?i).*/www/app/index.html") || viewPager.getCurrentItem() > 0)) {
+
+				fnAppCloseMessageShow();
+				return true;
+			} else {
+				super.dispatchKeyEvent(event);
+			}
+		}
+
+		return true;
+	}
+
+	private void fnAppCloseMessageShow() {
+
+		if (doubleBackToExitPressedOnce) {
+			finish();
+		}
+
+		this.doubleBackToExitPressedOnce = true;
+		Toast.makeText(getApplicationContext(), "'뒤로'버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+
+		new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
 	}
 }

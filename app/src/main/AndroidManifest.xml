@@ -1,17 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
 <manifest android:hardwareAccelerated="true" android:versionCode="10000" android:versionName="1.0.0" package="com.etoos.smartstudy" xmlns:android="http://schemas.android.com/apk/res/android">
     <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:resizeable="true" android:smallScreens="true" android:xlargeScreens="true" />
+
+    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="27" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application android:hardwareAccelerated="true" android:icon="@mipmap/icon" android:label="@string/app_name" android:supportsRtl="true">
-        <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/activity_name" android:launchMode="singleTop" android:name="MainActivity" android:theme="@style/AppTheme" android:windowSoftInputMode="adjustResize">
+        <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/activity_name" android:launchMode="singleTop" android:name="MainActivity" android:theme="@style/AppTheme" android:windowSoftInputMode="adjustResize" android:screenOrientation="unspecified">
             <intent-filter android:label="@string/launcher_name">
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:exported="true" android:label="@string/activity_name" android:launchMode="singleTop" android:name="cl.kunder.webview.WebViewActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme" android:windowSoftInputMode="adjustResize" />
+        <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:exported="true" android:label="@string/activity_name" android:launchMode="singleTop" android:name="cl.kunder.webview.WebViewActivity" android:screenOrientation="unspecified" android:theme="@style/AppTheme" android:windowSoftInputMode="adjustResize" />
     </application>
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="27" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 </manifest>

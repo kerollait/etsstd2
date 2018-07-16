@@ -50,4 +50,5 @@ public class EtoosViewPager extends ViewPager {
 	public Boolean getPagingStatus() {
 		return SystemWebView.viewPagerState;
 	}
+
 }

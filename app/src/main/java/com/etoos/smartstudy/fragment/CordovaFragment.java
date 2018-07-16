@@ -18,16 +18,21 @@
 */
 package com.etoos.smartstudy.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,13 +40,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.etoos.smartstudy.EtoosSwipeToRefresh;
 import com.etoos.smartstudy.R;
+import com.etoos.smartstudy.data.EtoosConstant;
+import com.etoos.smartstudy.data.EtoosData;
+import com.etoos.smartstudy.data.EtoosUrls;
 
 import org.apache.cordova.BuildConfig;
 import org.apache.cordova.ConfigXmlParser;
@@ -60,6 +71,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 /**
@@ -116,6 +128,17 @@ public class CordovaFragment extends Fragment {
 	protected CordovaInterfaceImpl cordovaInterface;
 
 	private View contentView;
+	private boolean isFirstLoadLaunchUrl = false;
+
+	public static CordovaFragment newInstance(int index) {
+		CordovaFragment fragment = new CordovaFragment();
+		Bundle b = new Bundle();
+		b.putInt("index", index);
+		fragment.setArguments(b);
+
+		return fragment;
+	}
+
 
 	public View getContentView() {
 		return contentView;
@@ -126,20 +149,69 @@ public class CordovaFragment extends Fragment {
 	}
 
 	public void onTabSelected() {
-		appView.loadUrl("javascript:onTabSelected();");
+		if (appView != null) {
+			appView.loadUrl("javascript:onTabSelected();");
+		}
 	}
 
 	public void onTabReselected() {
-		appView.loadUrl("javascript:onTabReselected();");
+		if (appView != null) {
+			appView.loadUrl("javascript:onTabReselected();");
+		}
 	}
 
 	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser)
-	{
+	public void setUserVisibleHint(boolean isVisibleToUser)	{
 		super.setUserVisibleHint(isVisibleToUser);
-		if (isVisibleToUser) {
 
+		if (appView != null) {
+			if (!isFirstLoadLaunchUrl) {
+				appView.loadUrl(launchUrl);
+				isFirstLoadLaunchUrl = true;
+			} else {
+				if (isVisibleToUser) {
+					appView.loadUrl("javascript:setUserVisibleHint(true);");
+				} else {
+					appView.loadUrl("javascript:setUserVisibleHint(false);");
+				}
+			}
+		}
+	}
+
+	public void setHeaderTitle(String type, final Activity activity, String title, final String headerLink) {
+		if ("home".equals(type)) {
+			activity.runOnUiThread(() -> {
+				String gradeName = EtoosData.getGradeName(Objects.requireNonNull(getContext()));
+
+				activity.findViewById(R.id.ll_title).setVisibility(View.VISIBLE);
+				activity.findViewById(R.id.tv_title).setVisibility(View.GONE);
+
+				TextView titleGrade = activity.findViewById(R.id.tv_title_grade);
+				titleGrade.setText(gradeName);
+
+				if (!TextUtils.isEmpty(headerLink)) {
+					activity.findViewById(R.id.ll_title).setOnClickListener(view -> appView.loadUrlIntoView(headerLink, false));
+				}
+			});
 		} else {
+			activity.runOnUiThread(() -> {
+				TextView tvTitle = activity.findViewById(R.id.tv_title);
+				tvTitle.setText(title);
+
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+					Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.noto_sans_kr_black_);
+					tvTitle.setTypeface(typeface);
+				}
+
+				if (!TextUtils.isEmpty(headerLink)) {
+					tvTitle.setOnClickListener(view -> {
+						appView.loadUrlIntoView(headerLink, false);
+					});
+				}
+
+				activity.findViewById(R.id.ll_title).setVisibility(View.GONE);
+				tvTitle.setVisibility(View.VISIBLE);
+			});
 
 		}
 	}
@@ -149,6 +221,13 @@ public class CordovaFragment extends Fragment {
 		if (contentView == null) {
 			init();
 		}
+
+		if (isFirstLoadLaunchUrl) {
+			appView.loadUrl(launchUrl);
+		} else {
+			appView.loadUrl("about:blank");
+		}
+
 		return contentView;
 	}
 
@@ -158,6 +237,20 @@ public class CordovaFragment extends Fragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		int index = getArguments() != null ? getArguments().getInt("index", 0) : 0;
+		if (index == 0) {
+			launchUrl = EtoosUrls.HOME;
+			isFirstLoadLaunchUrl = true;
+		} else if (index == 1) {
+			launchUrl = EtoosUrls.STUDY_LIST;
+		} else if (index == 2) {
+			launchUrl = EtoosUrls.FAVORITE;
+		} else if (index == 3) {
+			launchUrl = EtoosUrls.DOWNLOAD;
+		} else if (index == 4) {
+			launchUrl = EtoosUrls.USER;
+		}
+
 		loadConfig();
 
 		super.onCreate(savedInstanceState);
@@ -198,9 +291,7 @@ public class CordovaFragment extends Fragment {
 		parser.parse(this.getActivity());
 		preferences = parser.getPreferences();
 		preferences.setPreferencesBundle(getActivity().getIntent().getExtras());
-		launchUrl = parser.getLaunchUrl();
 		pluginEntries = parser.getPluginEntries();
-//        Config.parser = parser;
 	}
 
 	//Suppressing warnings in AndroidStudio
@@ -232,7 +323,6 @@ public class CordovaFragment extends Fragment {
 		setContentView(contentMain);
 
 		appView.getView().requestFocusFromTouch();
-
 	}
 
 	/**
@@ -510,5 +600,26 @@ public class CordovaFragment extends Fragment {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Called when a fragment will be displayed
+	 */
+	public void willBeDisplayed() {
+		// Do what you want here, for example animate the content
+		if (appView != null) {
+			Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+			appView.getView().startAnimation(fadeIn);
+		}
+	}
+
+	/**
+	 * Called when a fragment will be hidden
+	 */
+	public void willBeHidden() {
+		if (appView != null) {
+			Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+			appView.getView().startAnimation(fadeOut);
+		}
 	}
 }

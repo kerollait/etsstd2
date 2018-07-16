@@ -2,6 +2,8 @@ var etoosSwiper = null;
 var etoosUtil = new EtoosUtil();
 var etoosStorage = new EtoosStorage();
 var orientation = "";
+var view_visible = false;
+var first_loaded = true;
 
 var url_root = "file:///android_asset/www";
 var api_domain = "http://m.etoos.com";
@@ -205,6 +207,10 @@ function initCommon() {
     }
 
     etoosStorage.removeItem("login.return_url");
+}
+
+function setUserVisibleHint(visible) {
+	view_visible = visible;
 }
 
 function onNetworkStateChange() {

@@ -27,7 +27,6 @@ function onResume() {
 }
 
 function onTabSelected() {
-	etoos.setHeaderTitle('title', '즐겨찾는 강좌', EtoosServiceUrl.favorite);
 }
 
 function onTabReselected() {

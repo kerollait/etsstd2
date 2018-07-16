@@ -16,14 +16,17 @@ var app = {
     },
 
     onDeviceReady: function() {
-    	etoos.setHeaderTitle('home', EtoosData.getGradeName(), EtoosServiceUrl.home);
-    	etoos.showLoading();
+        if (first_loaded) {
+            etoos.setHeaderTitle('home', EtoosData.getGradeName(), EtoosServiceUrl.home);
+            etoos.showLoading();
+        }
 
     	document.addEventListener('resume', onResume, false);
 
 		initCommon();
         initEtoosUI();
         this.initContents();
+        first_loaded = false;
     },
 
     initContents: function() {
@@ -370,7 +373,7 @@ var app = {
 app.initialize();
 
 function onTabSelected() {
-	etoos.setHeaderTitle('home', EtoosData.getGradeName(), EtoosServiceUrl.home);
+
 }
 
 function onTabReselected() {

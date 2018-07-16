@@ -14,11 +14,11 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
-import com.etoos.smartstudy.fragment.DownloadFragment;
-import com.etoos.smartstudy.fragment.FavoriteFragment;
-import com.etoos.smartstudy.fragment.HomeFragment;
-import com.etoos.smartstudy.fragment.StudyListFragment;
-import com.etoos.smartstudy.fragment.UserFragment;
+import com.etoos.smartstudy.data.EtoosConstant;
+import com.etoos.smartstudy.data.EtoosData;
+import com.etoos.smartstudy.data.EtoosUrls;
+import com.etoos.smartstudy.fragment.CordovaFragment;
+import com.etoos.smartstudy.utils.CommonUtils;
 
 import java.util.Objects;
 
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	private View splashScreen;
 	private int initStartPage;
 	private boolean doubleBackToExitPressedOnce = false;
+	private boolean[] isMenuLoaded = {false, false, false, false, false};
 
 	EtoosFragmentPagerAdapter pagerAdapter;
 
@@ -46,21 +47,24 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		initStartPage = 2;
+		initStartPage = 0;
 
 		pagerAdapter = new EtoosFragmentPagerAdapter(this.getSupportFragmentManager());
-		pagerAdapter.addFragment(new HomeFragment());
-		pagerAdapter.addFragment(new StudyListFragment());
-		pagerAdapter.addFragment(new FavoriteFragment());
-		pagerAdapter.addFragment(new DownloadFragment());
-		pagerAdapter.addFragment(new UserFragment());
+
+		pagerAdapter.addFragment(CordovaFragment.newInstance(0));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(1));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(2));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(3));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(4));
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		viewPager = findViewById(R.id.viewpager);
 		viewPager.setAdapter(pagerAdapter);
-		viewPager.setOffscreenPageLimit(1);
+		viewPager.setOffscreenPageLimit(4);
+		viewPager.setPageTransformer(false, new FadePageTransformer());
+		viewPager.addOnPageChangeListener(this);
 
 		tabLayout = findViewById(R.id.tabs);
 		tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -76,46 +80,72 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 		splashScreen = findViewById(R.id.splash_screen);
 
 		final Handler handler = new Handler();
-		handler.postDelayed(this::removeSplashScreen, 1000);
+		handler.postDelayed(this::removeSplashScreen, 1500);
 	}
 
 	private void selectPage(int pageIndex){
+		CommonUtils.showLoader(this);
+
 		if (viewPager.getCurrentItem() != pageIndex) {
 			tabLayout.setScrollPosition(pageIndex, 0f, true);
 			viewPager.setCurrentItem(pageIndex);
 		}
+
+		isMenuLoaded[initStartPage] = true;
 	}
 
 	private Fragment findFragmentByPosition(int position) {
 		return getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + pagerAdapter.getItemId(position));
 	}
 
+	@Override
 	public void onTabSelected(TabLayout.Tab tab) {
-		viewPager.setCurrentItem(tab.getPosition());
-		Fragment fragment = findFragmentByPosition(tab.getPosition());
+
+		if (!isMenuLoaded[tab.getPosition()]) {
+			CommonUtils.showLoader(this);
+		}
+
+		int prevPosition = viewPager.getCurrentItem();
+		boolean isSmoothSlide = true;
+		if ((tab.getPosition() - prevPosition) > 1 || (prevPosition - tab.getPosition()) > 1) {
+			isSmoothSlide = false;
+		}
+
+		viewPager.setCurrentItem(tab.getPosition(), isSmoothSlide);
+
+		CordovaFragment fragment = (CordovaFragment) findFragmentByPosition(tab.getPosition());
 
 		switch (tab.getPosition()) {
 			case 0:
 				tab.setIcon(R.drawable.icon_home_on);
-				((HomeFragment) fragment).onTabSelected();
+				if (fragment.appView.getUrl().matches("(?i).*/www/app/index.html")) {
+					fragment.setHeaderTitle("home", this, EtoosData.getGradeName(getApplicationContext()), EtoosUrls.HOME);
+				}
 				break;
 			case 1:
 				tab.setIcon(R.drawable.icon_study_list_on);
-				((StudyListFragment) fragment).onTabSelected();
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_STUDY_LIST, EtoosUrls.STUDY_LIST);
 				break;
 			case 2:
 				tab.setIcon(R.drawable.icon_favorite_on);
-				((FavoriteFragment) fragment).onTabSelected();
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_FAVORITE, EtoosUrls.FAVORITE);
 				break;
 			case 3:
 				tab.setIcon(R.drawable.icon_download_on);
-				((DownloadFragment) fragment).onTabSelected();
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_DOWNLOAD, EtoosUrls.DOWNLOAD);
 				break;
 			case 4:
 				tab.setIcon(R.drawable.icon_user_on);
-				((UserFragment) fragment).onTabSelected();
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_USER, EtoosUrls.USER);
 				break;
 		}
+
+		if (!isSmoothSlide) {
+			fragment.willBeDisplayed();
+		}
+
+		fragment.onTabSelected();
+		isMenuLoaded[tab.getPosition()] = true;
 	}
 
 	@Override
@@ -141,25 +171,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 	@Override
 	public void onTabReselected(TabLayout.Tab tab) {
-		Fragment fragment = findFragmentByPosition(tab.getPosition());
-
-		switch (tab.getPosition()) {
-			case 0:
-				((HomeFragment) fragment).onTabReselected();
-				break;
-			case 1:
-				((StudyListFragment) fragment).onTabReselected();
-				break;
-			case 2:
-				((FavoriteFragment) fragment).onTabReselected();
-				break;
-			case 3:
-				((DownloadFragment) fragment).onTabReselected();
-				break;
-			case 4:
-				((UserFragment) fragment).onTabReselected();
-				break;
-		}
+		CordovaFragment fragment = (CordovaFragment) findFragmentByPosition(tab.getPosition());
+		fragment.onTabReselected();
 	}
 
 	@Override
@@ -175,6 +188,23 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	@Override
 	public void onPageScrollStateChanged(int state) {
 
+	}
+
+	public class FadePageTransformer implements ViewPager.PageTransformer {
+
+		public void transformPage(View view, float position) {
+			if (position <= -1.0F || position >= 1.0F) {
+				view.setTranslationX(view.getWidth() * position);
+				view.setAlpha(0.0F);
+			} else if ( position == 0.0F ) {
+				view.setTranslationX(view.getWidth() * position);
+				view.setAlpha(1.0F);
+			} else {
+				// position is between -1.0F & 0.0F OR 0.0F & 1.0F
+				view.setTranslationX(view.getWidth() * -position);
+				view.setAlpha(1.0F - Math.abs(position));
+			}
+		}
 	}
 
 	private void removeSplashScreen() {
@@ -193,9 +223,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				selectPage(initStartPage);
 				splashScreen.setVisibility(View.GONE);
 				splashScreen = null;
+				selectPage(initStartPage);
 			}
 
 			@Override
@@ -254,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		String url = "";
 		if (viewPager.getCurrentItem() == 0) {
-			url = ((HomeFragment) findFragmentByPosition(0)).getAppView().getUrl();
+			url = ((CordovaFragment) findFragmentByPosition(0)).getAppView().getUrl();
 		}
 
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {

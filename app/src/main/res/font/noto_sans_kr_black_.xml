@@ -6,10 +6,10 @@
     <font
         android:font="@font/noto_sans_kr_black"
         android:fontStyle="normal"
-        android:fontWeight="900"
+        android:fontWeight="600"
         app:fontStyle="normal"
         app:font="@font/noto_sans_kr_black"
-        app:fontWeight="900"
+        app:fontWeight="600"
         tools:ignore="UnusedAttribute"/>
 
 </font-family>

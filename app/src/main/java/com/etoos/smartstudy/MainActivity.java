@@ -1,22 +1,27 @@
 package com.etoos.smartstudy;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.etoos.smartstudy.data.EtoosConstant;
-import com.etoos.smartstudy.data.EtoosData;
-import com.etoos.smartstudy.data.EtoosUrls;
 import com.etoos.smartstudy.fragment.CordovaFragment;
 import com.etoos.smartstudy.utils.CommonUtils;
 
@@ -45,20 +50,18 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main2);
 
 		initStartPage = 0;
+		isMenuLoaded[initStartPage] = true;
 
 		pagerAdapter = new EtoosFragmentPagerAdapter(this.getSupportFragmentManager());
 
-		pagerAdapter.addFragment(CordovaFragment.newInstance(0));
-		pagerAdapter.addFragment(CordovaFragment.newInstance(1));
-		pagerAdapter.addFragment(CordovaFragment.newInstance(2));
-		pagerAdapter.addFragment(CordovaFragment.newInstance(3));
-		pagerAdapter.addFragment(CordovaFragment.newInstance(4));
-
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		pagerAdapter.addFragment(CordovaFragment.newInstance(0, isMenuLoaded[0]));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(1, isMenuLoaded[1]));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(2, isMenuLoaded[2]));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(3, isMenuLoaded[3]));
+		pagerAdapter.addFragment(CordovaFragment.newInstance(4, isMenuLoaded[4]));
 
 		viewPager = findViewById(R.id.viewpager);
 		viewPager.setAdapter(pagerAdapter);
@@ -66,21 +69,75 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 		viewPager.setPageTransformer(false, new FadePageTransformer());
 		viewPager.addOnPageChangeListener(this);
 
-		tabLayout = findViewById(R.id.tabs);
-		tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+		tabLayout = findViewById(R.id.headerTab);
+		tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
+
 		tabLayout.setupWithViewPager(viewPager);
 		tabLayout.addOnTabSelectedListener(this);
 
-		for (int i = 0; i < imageResId.length; i++) {
-			Objects.requireNonNull(tabLayout.getTabAt(i)).setIcon(imageResId[i]);
+		View tabMenu = getLayoutInflater().inflate(R.layout.header_tab, null);
+		ImageView tab1 = tabMenu.findViewById(R.id.header_logo);
+		TextView tab2 = tabMenu.findViewById(R.id.header_tab_teacher);
+		TextView tab3 = tabMenu.findViewById(R.id.header_tab_study);
+		TextView tab4 = tabMenu.findViewById(R.id.header_tab_download);
+		TextView tab5 = tabMenu.findViewById(R.id.header_tab_myroom);
+
+		try {
+			Objects.requireNonNull(tabLayout.getTabAt(0)).setCustomView(tab1);
+			Objects.requireNonNull(tabLayout.getTabAt(1)).setCustomView(tab2);
+			Objects.requireNonNull(tabLayout.getTabAt(2)).setCustomView(tab3);
+			Objects.requireNonNull(tabLayout.getTabAt(3)).setCustomView(tab4);
+			Objects.requireNonNull(tabLayout.getTabAt(4)).setCustomView(tab5);
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 
-		Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.icon_home_on);
+		wrapTabIndicatorToTitle(tabLayout, 24, 24);
+
 
 		splashScreen = findViewById(R.id.splash_screen);
 
 		final Handler handler = new Handler();
 		handler.postDelayed(this::removeSplashScreen, 1500);
+	}
+
+	public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
+		View tabStrip = tabLayout.getChildAt(0);
+		if (tabStrip instanceof ViewGroup) {
+			ViewGroup tabStripGroup = (ViewGroup) tabStrip;
+			int childCount = ((ViewGroup) tabStrip).getChildCount();
+			for (int i = 0; i < childCount; i++) {
+				View tabView = tabStripGroup.getChildAt(i);
+				//set minimum width to 0 for instead for small texts, indicator is not wrapped as expected
+				tabView.setMinimumWidth(0);
+				// set padding to 0 for wrapping indicator as title
+				tabView.setPadding(0, tabView.getPaddingTop(), 0, tabView.getPaddingBottom());
+				// setting custom margin between tabs
+				if (tabView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+					ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) tabView.getLayoutParams();
+					if (i == 0) {
+						// left
+						settingMargin(layoutParams, externalMargin, internalMargin);
+					} else if (i == childCount - 1) {
+						// right
+						settingMargin(layoutParams, internalMargin, externalMargin);
+					} else {
+						// internal
+						if (i == 1) {
+							internalMargin = initStartPage + 10;
+						}
+						settingMargin(layoutParams, internalMargin, internalMargin);
+					}
+				}
+			}
+
+			tabLayout.requestLayout();
+		}
+	}
+
+	private void settingMargin(ViewGroup.MarginLayoutParams layoutParams, int start, int end) {
+		layoutParams.setMarginStart(start);
+		layoutParams.setMarginEnd(end);
 	}
 
 	private void selectPage(int pageIndex){
@@ -91,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 			viewPager.setCurrentItem(pageIndex);
 		}
 
-		isMenuLoaded[initStartPage] = true;
+
 	}
 
 	private Fragment findFragmentByPosition(int position) {
@@ -100,6 +157,30 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 	@Override
 	public void onTabSelected(TabLayout.Tab tab) {
+
+		View view = tab.getCustomView();
+		TextView selectedTextView;
+		switch (tab.getPosition()) {
+			case 1:
+				selectedTextView = view.findViewById(R.id.header_tab_teacher);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
+				break;
+
+			case 2:
+				selectedTextView = view.findViewById(R.id.header_tab_study);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
+				break;
+
+			case 3:
+				selectedTextView = view.findViewById(R.id.header_tab_download);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
+				break;
+
+			case 4:
+				selectedTextView = view.findViewById(R.id.header_tab_myroom);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
+				break;
+		}
 
 		if (!isMenuLoaded[tab.getPosition()]) {
 			CommonUtils.showLoader(this);
@@ -115,31 +196,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 		CordovaFragment fragment = (CordovaFragment) findFragmentByPosition(tab.getPosition());
 
-		switch (tab.getPosition()) {
-			case 0:
-				tab.setIcon(R.drawable.icon_home_on);
-				if (fragment.appView.getUrl().matches("(?i).*/www/app/index.html")) {
-					fragment.setHeaderTitle("home", this, EtoosData.getGradeName(getApplicationContext()), EtoosUrls.HOME);
-				}
-				break;
-			case 1:
-				tab.setIcon(R.drawable.icon_study_list_on);
-				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_STUDY_LIST, EtoosUrls.STUDY_LIST);
-				break;
-			case 2:
-				tab.setIcon(R.drawable.icon_favorite_on);
-				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_FAVORITE, EtoosUrls.FAVORITE);
-				break;
-			case 3:
-				tab.setIcon(R.drawable.icon_download_on);
-				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_DOWNLOAD, EtoosUrls.DOWNLOAD);
-				break;
-			case 4:
-				tab.setIcon(R.drawable.icon_user_on);
-				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_USER, EtoosUrls.USER);
-				break;
-		}
-
 		if (!isSmoothSlide) {
 			fragment.willBeDisplayed();
 		}
@@ -150,21 +206,27 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 	@Override
 	public void onTabUnselected(TabLayout.Tab tab) {
+		View view = tab.getCustomView();
+		TextView selectedTextView;
 		switch (tab.getPosition()) {
-			case 0:
-				tab.setIcon(R.drawable.icon_home);
-				break;
 			case 1:
-				tab.setIcon(R.drawable.icon_study_list);
+				selectedTextView = view.findViewById(R.id.header_tab_teacher);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
+
 			case 2:
-				tab.setIcon(R.drawable.icon_favorite);
+				selectedTextView = view.findViewById(R.id.header_tab_study);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
+
 			case 3:
-				tab.setIcon(R.drawable.icon_download);
+				selectedTextView = view.findViewById(R.id.header_tab_download);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
+
 			case 4:
-				tab.setIcon(R.drawable.icon_user);
+				selectedTextView = view.findViewById(R.id.header_tab_myroom);
+				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
 		}
 	}

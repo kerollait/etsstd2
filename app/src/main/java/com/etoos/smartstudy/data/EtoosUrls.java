@@ -9,4 +9,7 @@ public class EtoosUrls {
 	public static String DOWNLOAD = ROOT + "/download.html";
 	public static String USER = ROOT + "/user.html";
 
+	public static String TEACHER_LIST = ROOT + "/teacher/list.html";
+	public static String TEACHER_TCC_LIST = ROOT + "/teacher/tcc/list.html";
+
 }

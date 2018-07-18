@@ -381,7 +381,9 @@ function onTabReselected() {
 }
 
 function onResume() {
-	console.log("home onResume fire!!!!!!");
+	if (view_visible) {
+		console.log("home onResume fire!!!!!!");
+	}
 }
 
 function setImageResourceFromLocalStorage(obj) {
@@ -426,7 +428,9 @@ function fnSwipePullRefresh() {
 }
 
 function setOrientationChange() {
-	document.location.reload();
+	if (view_visible) {
+		document.location.reload();
+	}
 }
 
 function goPageApp(link_url,link_url_ios){

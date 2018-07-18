@@ -23,17 +23,10 @@ public class CommonUtils {
      * @return A float value to represent px equivalent to dp depending on device density
      */
 
-    public static float convertDpToPixel(float dp, Context context) {
-
-        Resources resources = context.getResources();
-
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-
-        float px = dp * (metrics.densityDpi / 160f);
-
-        return px;
-
-    }
+	public static int dpToPx(Context context, int dp) {
+		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+		return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+	}
 
 
     /**

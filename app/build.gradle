@@ -172,7 +172,7 @@ android {
       abortOnError false;
     }
 
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion cdvBuildToolsVersion
 
     //This code exists for Crosswalk and other Native APIs.
@@ -268,6 +268,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.airbnb.android:lottie:2.5.0-rc1'
+    implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
 }
 
 def promptForReleaseKeyPassword() {

@@ -1,22 +1,41 @@
-<android.support.constraint.ConstraintLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/content"
-	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical"
 	tools:context="com.etoos.smartstudy.MainActivity"
 	tools:showIn="@layout/activity_main">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.etoos.smartstudy.EtoosTabLayout
+            android:id="@+id/headerSubTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@color/defaultColor"
+            app:tabBackground="@color/defaultColor"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabPaddingBottom="0dp"
+            app:tabPaddingEnd="3dp"
+            app:tabPaddingStart="3dp"
+            app:tabPaddingTop="0dp"/>
+
+    </android.support.design.widget.AppBarLayout>
 
 	<com.etoos.smartstudy.EtoosSwipeToRefresh
 		android:id="@+id/swipeContainer"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		app:layout_behavior="@string/appbar_scrolling_view_behavior">
+		android:layout_height="match_parent">
 
 
 	</com.etoos.smartstudy.EtoosSwipeToRefresh>
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

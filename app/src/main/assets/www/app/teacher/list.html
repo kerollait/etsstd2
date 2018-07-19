@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+
+	<link rel="stylesheet" type="text/css" href="file:///android_asset/www/app/common-res/css/metoos_2017.css">
+	<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/jquery/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/etoos_util.js"></script>
+	<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/etoos_storage.js"></script>
+	<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/etoos_ui.js"></script>
+
+	<script type="text/javascript" src="file:///android_asset/www/app/common/head.js"></script>
+
+	<title>선생님 전체목록</title>
+</head>
+<body>
+<div id="etoosHtmlBody">
+
+	<div id="etoosWrap">
+
+		<!--//////////////////// 메인 컨텐츠 시작 ////////////////////////////// -->
+		<div id="etoosContent">
+
+			<!-- 선생님 서브메뉴 -->
+			<ul class="teacher_tab">
+				<li><a href="javascript:fnGoUrl(EtoosServiceUrl.teacher_list);" class="on"><span>전체보기</span></a></li>
+				<li><a href="javascript:fnGoUrl(EtoosServiceUrl.tcc_list);" class=""><span>TCC</span></a></li>
+				<li><a href="javascript:fnGoUrl(EtoosServiceUrl.onecut_list);" class=""><span>한컷강의</span></a></li>
+				<li><a href="javascript:fnGoUrl(EtoosServiceUrl.review_list);" class=""><span>수강후기</span></a></li>
+			</ul>
+			<!-- 선생님 서브메뉴 -->
+
+			<div class="toptab" id="top_swiper_menu">
+				<div>
+					<div class="comswiper not-this comtabsw">
+						<div class="swiper-container" id="top_swiper_menu_container" style="filter: alpha(opacity=0); opacity: 0;">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0001" data-main-menu="0001" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0001" data-preload="true" data-onload-fnc="fnTeacherListOnload0001" data-unload-fnc="fnTeacherListUnload0001"><span>국어</span></a></div>
+
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0003" data-main-menu="0003" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0003" data-preload="true" data-onload-fnc="fnTeacherListOnload0003" data-unload-fnc="fnTeacherListUnload0003"><span>수학</span></a></div>
+
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0002" data-main-menu="0002" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0002" data-preload="true" data-onload-fnc="fnTeacherListOnload0002" data-unload-fnc="fnTeacherListUnload0002"><span>영어</span></a></div>
+
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0004" data-main-menu="0004" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0004" data-preload="true" data-onload-fnc="fnTeacherListOnload0004" data-unload-fnc="fnTeacherListUnload0004"><span>사회</span></a></div>
+
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0005" data-main-menu="0005" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0005" data-preload="true" data-onload-fnc="fnTeacherListOnload0005" data-unload-fnc="fnTeacherListUnload0005"><span>과학</span></a></div>
+
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0016" data-main-menu="0016" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0016" data-preload="true" data-onload-fnc="fnTeacherListOnload0016" data-unload-fnc="fnTeacherListUnload0016"><span>한국사</span></a></div>
+
+
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0007" data-main-menu="0007" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0007" data-preload="true" data-onload-fnc="fnTeacherListOnload0007" data-unload-fnc="fnTeacherListUnload0007"><span>대학별</span></a></div>
+
+
+								<div class="swiper-slide"><a href="http://m.etoos.com/teacher/#!/area_cd=0006" data-main-menu="0006" data-main-url="http://m.etoos.com/teacher/teacher_list.asp?area_cd=0006" data-preload="true" data-onload-fnc="fnTeacherListOnload0006" data-unload-fnc="fnTeacherListUnload0006"><span>제2외/한</span></a></div>
+							</div>
+						</div>
+						<a href="javascript:;" class="more" id="top_swiper_menu_nav"><span><s>다음보기</s></span></a>
+					</div>
+				</div>
+			</div>
+
+			<!-- 컨텐츠 -->
+			<div id="mainContent" style="min-height:300px;">
+				<div class="iosSlider">
+					<div class="slider" style="background:#fff;"></div>
+				</div>
+			</div>
+			<!-- 컨텐츠 -->
+
+		</div>
+		<!--//////////////////// 메인 컨텐츠 종료 ////////////////////////////// -->
+
+	</div>
+
+</div>
+
+<script type="text/javascript" src="file:///android_asset/www/cordova.js"></script>
+
+<!-- external library -->
+<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/jquery/jquery.iosslider.min.js"></script>
+<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/jquery/swiper3.4.2.jquery.min.js"></script>
+<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/jquery/jquery.xhrPool.js"></script>
+<!-- external library -->
+
+<!-- etoos library -->
+<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/etoos_common.js"></script>
+<script type="text/javascript" src="file:///android_asset/www/app/common-res/js/etoos_swiper.js"></script>
+<!-- etoos library -->
+
+<script type="text/javascript" src="list.js"></script>
+
+</body>
+</html>

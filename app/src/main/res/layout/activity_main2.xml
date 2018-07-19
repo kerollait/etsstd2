@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_container">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/header">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="?attr/colorPrimary"
+                app:contentInsetStart="0dp"
+                app:layout_scrollFlags="scroll|enterAlways" >
+
+                <include layout="@layout/header_"/>
+
+            </android.support.v7.widget.Toolbar>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/header_border"
+                android:background="#222222"
+                android:layout_below="@id/top_menu"/>
+
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/headerTab"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="15dp"
+                android:overScrollMode="never"
+                app:tabIndicatorHeight="3dp"
+                app:tabMode="scrollable"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/header_border"
+                android:background="#888888"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <com.etoos.smartstudy.EtoosViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/header"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:id="@+id/splash_screen">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/c_splash_screen"/>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

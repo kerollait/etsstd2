@@ -1,6 +1,5 @@
 package com.etoos.smartstudy;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,17 +10,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.etoos.smartstudy.data.EtoosConstant;
+import com.etoos.smartstudy.data.EtoosData;
+import com.etoos.smartstudy.data.EtoosUrls;
 import com.etoos.smartstudy.fragment.CordovaFragment;
 import com.etoos.smartstudy.utils.CommonUtils;
 
@@ -38,14 +38,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	private boolean[] isMenuLoaded = {false, false, false, false, false};
 
 	EtoosFragmentPagerAdapter pagerAdapter;
-
-	private int[] imageResId = {
-			R.drawable.icon_home,
-			R.drawable.icon_study_list,
-			R.drawable.icon_favorite,
-			R.drawable.icon_download,
-			R.drawable.icon_user
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +68,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 		tabLayout.addOnTabSelectedListener(this);
 
 		View tabMenu = getLayoutInflater().inflate(R.layout.header_tab, null);
-		ImageView tab1 = tabMenu.findViewById(R.id.header_logo);
+		TextView tab1 = tabMenu.findViewById(R.id.header_tab_home);
 		TextView tab2 = tabMenu.findViewById(R.id.header_tab_teacher);
 		TextView tab3 = tabMenu.findViewById(R.id.header_tab_study);
 		TextView tab4 = tabMenu.findViewById(R.id.header_tab_download);
 		TextView tab5 = tabMenu.findViewById(R.id.header_tab_myroom);
+
+		tab1.setText(EtoosConstant.TITLE_HOME);
+		tab2.setText(EtoosConstant.TITLE_TEACHER);
+		tab3.setText(EtoosConstant.TITLE_STUDY_LIST);
+		tab4.setText(EtoosConstant.TITLE_DOWNLOAD);
+		tab5.setText(EtoosConstant.TITLE_USER);
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+			Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.noto_sans_kr_black_);
+			tab1.setTypeface(typeface);
+		}
 
 		try {
 			Objects.requireNonNull(tabLayout.getTabAt(0)).setCustomView(tab1);
@@ -123,9 +126,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 						settingMargin(layoutParams, internalMargin, externalMargin);
 					} else {
 						// internal
-						if (i == 1) {
-							internalMargin = initStartPage + 10;
-						}
 						settingMargin(layoutParams, internalMargin, internalMargin);
 					}
 				}
@@ -158,30 +158,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	@Override
 	public void onTabSelected(TabLayout.Tab tab) {
 
-		View view = tab.getCustomView();
-		TextView selectedTextView;
-		switch (tab.getPosition()) {
-			case 1:
-				selectedTextView = view.findViewById(R.id.header_tab_teacher);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
-				break;
-
-			case 2:
-				selectedTextView = view.findViewById(R.id.header_tab_study);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
-				break;
-
-			case 3:
-				selectedTextView = view.findViewById(R.id.header_tab_download);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
-				break;
-
-			case 4:
-				selectedTextView = view.findViewById(R.id.header_tab_myroom);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultColor));
-				break;
-		}
-
 		if (!isMenuLoaded[tab.getPosition()]) {
 			CommonUtils.showLoader(this);
 		}
@@ -200,6 +176,37 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 			fragment.willBeDisplayed();
 		}
 
+		View view = tab.getCustomView();
+		TextView selectedTextView = null;
+		switch (tab.getPosition()) {
+			case 0:
+				selectedTextView = view.findViewById(R.id.header_tab_home);
+				fragment.setHeaderTitle("home", this, EtoosData.getGradeName(this), EtoosUrls.HOME);
+				break;
+
+			case 1:
+				selectedTextView = view.findViewById(R.id.header_tab_teacher);
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_TEACHER, EtoosUrls.TEACHER_LIST);
+				break;
+
+			case 2:
+				selectedTextView = view.findViewById(R.id.header_tab_study);
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_STUDY_LIST, EtoosUrls.STUDY_LIST);
+				break;
+
+			case 3:
+				selectedTextView = view.findViewById(R.id.header_tab_download);
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_DOWNLOAD, EtoosUrls.DOWNLOAD);
+				break;
+
+			case 4:
+				selectedTextView = view.findViewById(R.id.header_tab_myroom);
+				fragment.setHeaderTitle("sub", this, EtoosConstant.TITLE_USER, EtoosUrls.USER);
+				break;
+		}
+
+		setTabTextColorChange(selectedTextView, R.color.defaultColor);
+
 		fragment.onTabSelected();
 		isMenuLoaded[tab.getPosition()] = true;
 	}
@@ -207,27 +214,35 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 	@Override
 	public void onTabUnselected(TabLayout.Tab tab) {
 		View view = tab.getCustomView();
-		TextView selectedTextView;
+		TextView selectedTextView = null;
 		switch (tab.getPosition()) {
+			case 0:
+				selectedTextView = view.findViewById(R.id.header_tab_home);
+				break;
+
 			case 1:
 				selectedTextView = view.findViewById(R.id.header_tab_teacher);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
 
 			case 2:
 				selectedTextView = view.findViewById(R.id.header_tab_study);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
 
 			case 3:
 				selectedTextView = view.findViewById(R.id.header_tab_download);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
 
 			case 4:
 				selectedTextView = view.findViewById(R.id.header_tab_myroom);
-				selectedTextView.setTextColor(ContextCompat.getColor(this, R.color.defaultTextColor));
 				break;
+		}
+
+		setTabTextColorChange(selectedTextView, R.color.defaultTextColor);
+	}
+
+	private void setTabTextColorChange(TextView textView, int color) {
+		if (textView != null) {
+			textView.setTextColor(ContextCompat.getColor(getApplicationContext(), color));
 		}
 	}
 

@@ -138,6 +138,11 @@ public class EtoosPlugin extends CordovaPlugin {
 									TextView titleGrade = cordova.getActivity().findViewById(R.id.tv_title_grade);
 									titleGrade.setText(title);
 
+									if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+										Typeface typeface = ResourcesCompat.getFont(cordova.getActivity().getApplicationContext(), R.font.noto_sans_kr);
+										titleGrade.setTypeface(typeface, Typeface.BOLD);
+									}
+
 									final String headerLink = titleLink;
 
 									if (!TextUtils.isEmpty(headerLink)) {
@@ -151,8 +156,8 @@ public class EtoosPlugin extends CordovaPlugin {
 										tvTitle.setText(title);
 
 										if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-											Typeface typeface = ResourcesCompat.getFont(cordova.getContext(), R.font.noto_sans_kr_black_);
-											tvTitle.setTypeface(typeface);
+											Typeface typeface = ResourcesCompat.getFont(cordova.getContext(), R.font.noto_sans_kr);
+											tvTitle.setTypeface(typeface, Typeface.BOLD);
 										}
 
 										final String headerLink = titleLink;

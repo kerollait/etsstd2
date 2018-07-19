@@ -68,7 +68,6 @@ function onWebviewSubscribeCallback(params) {
 }
 
 function onTabSelected() {
-	etoos.setHeaderTitle('title', '선생님', EtoosServiceUrl.tcc_list);
 }
 
 function onTabReselected() {

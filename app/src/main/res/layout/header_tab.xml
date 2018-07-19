@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_tab_home"
+        android:textSize="13.5sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:fontFamily="@font/noto_sans_kr"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_tab_teacher"
+        android:textSize="13.5sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:fontFamily="@font/noto_sans_kr"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_tab_study"
+        android:textSize="13.5sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:fontFamily="@font/noto_sans_kr"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_tab_download"
+        android:textSize="13.5sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:fontFamily="@font/noto_sans_kr"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_tab_myroom"
+        android:textSize="13.5sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:fontFamily="@font/noto_sans_kr"/>
+
+
+</android.support.constraint.ConstraintLayout>

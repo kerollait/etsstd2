@@ -76,6 +76,7 @@ import org.apache.cordova.engine.SystemWebViewEngine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -198,6 +199,11 @@ public class CordovaFragment extends Fragment {
 				TextView titleGrade = activity.findViewById(R.id.tv_title_grade);
 				titleGrade.setText(gradeName);
 
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+					Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.noto_sans_kr);
+					titleGrade.setTypeface(typeface, Typeface.BOLD);
+				}
+
 				if (!TextUtils.isEmpty(headerLink)) {
 					activity.findViewById(R.id.ll_title).setOnClickListener(view -> appView.loadUrlIntoView(headerLink, false));
 				}
@@ -208,8 +214,8 @@ public class CordovaFragment extends Fragment {
 				tvTitle.setText(title);
 
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-					Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.noto_sans_kr_black_);
-					tvTitle.setTypeface(typeface);
+					Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.noto_sans_kr);
+					tvTitle.setTypeface(typeface, Typeface.BOLD);
 				}
 
 				if (!TextUtils.isEmpty(headerLink)) {
@@ -254,7 +260,7 @@ public class CordovaFragment extends Fragment {
 		} else if (index == 1) {
 			launchUrl = EtoosUrls.TEACHER_LIST;
 		} else if (index == 2) {
-			launchUrl = EtoosUrls.FAVORITE;
+			launchUrl = EtoosUrls.STUDY_LIST;
 		} else if (index == 3) {
 			launchUrl = EtoosUrls.DOWNLOAD;
 		} else if (index == 4) {
@@ -312,93 +318,6 @@ public class CordovaFragment extends Fragment {
 		assert inflater != null;
 		View contentMain = inflater.inflate(R.layout.content_main, null);
 
-		if (index == 1) {
-			EtoosTabLayout subTab = contentMain.findViewById(R.id.headerSubTab);
-			subTab.setPagingEnabled(false);
-			subTab.setSelectedTabIndicatorHeight(0);
-			subTab.setVisibility(View.VISIBLE);
-
-			View tabMenu = getLayoutInflater().inflate(R.layout.header_tab, null);
-			TextView subTab1 = tabMenu.findViewById(R.id.header_subtab_teacher_list);
-			TextView subTab2 = tabMenu.findViewById(R.id.header_subtab_teacher_tcc);
-			TextView subTab3 = tabMenu.findViewById(R.id.header_subtab_teacher_onecut);
-			TextView subTab4 = tabMenu.findViewById(R.id.header_subtab_teacher_review);
-
-			subTab1.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.whiteTextColor));
-
-			subTab.addTab(subTab.newTab().setCustomView(subTab1));
-			subTab.addTab(subTab.newTab().setCustomView(subTab2));
-			subTab.addTab(subTab.newTab().setCustomView(subTab3));
-			subTab.addTab(subTab.newTab().setCustomView(subTab4));
-
-			wrapTabIndicatorToTitle(subTab, 30, 30);
-
-			subTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-				@Override
-				public void onTabSelected(TabLayout.Tab tab) {
-					View view = tab.getCustomView();
-					TextView selectedTextView;
-
-					switch (tab.getPosition()) {
-						case 0:
-							appView.loadUrl(EtoosUrls.TEACHER_LIST);
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_list);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.whiteTextColor));
-							break;
-
-						case 1:
-							appView.loadUrl(EtoosUrls.TEACHER_TCC_LIST);
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_tcc);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.whiteTextColor));
-							break;
-
-						case 2:
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_onecut);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.whiteTextColor));
-							break;
-
-						case 3:
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_review);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.whiteTextColor));
-							break;
-					}
-
-				}
-
-				@Override
-				public void onTabUnselected(TabLayout.Tab tab) {
-					View view = tab.getCustomView();
-					TextView selectedTextView;
-					switch (tab.getPosition()) {
-						case 0:
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_list);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.defaultUnSelectedTextColor));
-							break;
-
-						case 1:
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_tcc);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.defaultUnSelectedTextColor));
-							break;
-
-						case 2:
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_onecut);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.defaultUnSelectedTextColor));
-							break;
-
-						case 3:
-							selectedTextView = view.findViewById(R.id.header_subtab_teacher_review);
-							selectedTextView.setTextColor(ContextCompat.getColor(cordovaInterface.getContext(), R.color.defaultUnSelectedTextColor));
-							break;
-					}
-				}
-
-				@Override
-				public void onTabReselected(TabLayout.Tab tab) {
-
-				}
-			});
-		}
-
 		//Why are we setting a constant as the ID? This should be investigated
 		appView.getView().setId(100);
 		appView.getView().setLayoutParams(new FrameLayout.LayoutParams(
@@ -424,41 +343,6 @@ public class CordovaFragment extends Fragment {
 		appView.getView().requestFocusFromTouch();
 	}
 
-	public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
-		View tabStrip = tabLayout.getChildAt(0);
-		if (tabStrip instanceof ViewGroup) {
-			ViewGroup tabStripGroup = (ViewGroup) tabStrip;
-			int childCount = ((ViewGroup) tabStrip).getChildCount();
-			for (int i = 0; i < childCount; i++) {
-				View tabView = tabStripGroup.getChildAt(i);
-				//set minimum width to 0 for instead for small texts, indicator is not wrapped as expected
-				tabView.setMinimumWidth(0);
-				// set padding to 0 for wrapping indicator as title
-				tabView.setPadding(0, tabView.getPaddingTop(), 0, tabView.getPaddingBottom());
-				// setting custom margin between tabs
-				if (tabView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-					ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) tabView.getLayoutParams();
-					if (i == 0) {
-						// left
-						settingMargin(layoutParams, externalMargin, internalMargin);
-					} else if (i == childCount - 1) {
-						// right
-						settingMargin(layoutParams, internalMargin, externalMargin);
-					} else {
-						// internal
-						settingMargin(layoutParams, internalMargin, internalMargin);
-					}
-				}
-			}
-
-			tabLayout.requestLayout();
-		}
-	}
-
-	private void settingMargin(ViewGroup.MarginLayoutParams layoutParams, int start, int end) {
-		layoutParams.setMarginStart(start);
-		layoutParams.setMarginEnd(end);
-	}
 
 	/**
 	 * Construct the default web view object.

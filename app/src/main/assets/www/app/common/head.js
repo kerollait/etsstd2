@@ -26,7 +26,9 @@ var EtoosServiceUrl = {
 	favorite: url_root +"/app/favorite.html",
 	download: url_root +"/app/download.html",
 	tcc_list: url_root +"/app/teacher/tcc/list.html",
-	teacher: url_root +"/app/teacher/index.html"
+	teacher_list: url_root +"/app/teacher/list.html",
+	onecut_list: url_root +"/app/teacher/onecut/list.html",
+	review_list: url_root +"/app/teacher/review/list.html"
 }
 
 var EtoosApiUrl = {
@@ -285,4 +287,9 @@ function fnGoMyroom() {
 	} else {
 		document.location.href = EtoosServiceUrl.myroom;
 	}
+}
+
+function fnGoUrl(url) {
+	etoos.showLoading();
+	document.location.href = url;
 }
